@@ -12,11 +12,14 @@ using namespace std;
 
 Sequence::Sequence(unsigned short nbSignatures) {
     this->signatures = new Signature *[nbSignatures];
-
+    for (int i=0; i< nbSignatures; i++){
+        this->signatures[i] = NULL;
+    }
 }
 
+
 Sequence::~Sequence() {
-    cout << "deleting sequence " << endl;
+    //cout << "deleting sequence " << endl;
     delete [] this->signatures;
 }
 

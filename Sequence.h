@@ -13,7 +13,7 @@ public:
     Signature** signatures;
 
 
-    Sequence(unsigned short nbSignatures);
+    Sequence(unsigned short  nbSignatures);
     ~Sequence();
 
     void addSignature(Signature* &sig, unsigned short bandNumber);

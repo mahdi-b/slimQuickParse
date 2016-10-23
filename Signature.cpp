@@ -31,21 +31,21 @@ short Signature::binary_search(unsigned int array[], int first, int last, int se
     return index;
 }
 
-Signature::Signature(unsigned int signatureId) :
-        signatureId(signatureId), nbSequences(0), visited(false) {
-    cout << "creating new signture with sig: " << signatureId << endl;
+Signature::Signature(unsigned int signatureId, unsigned short cardinality) :
+        signatureId(signatureId), cardinality(cardinality), nbSequences(0), visited(false) {
+    // cout << "creating new signture with sig: " << signatureId << endl;
     this->sequences = new unsigned int [500];
 }
 Signature::~Signature(){
-    cout << "deleting signature " << this->signatureId << endl;
+    // cout << "deleting signature " << this->signatureId << endl;
     delete [] this->sequences;
 }
 
 void Signature::addSequence(unsigned int seqId) {
     this->sequences[this->nbSequences] = seqId;
     this->nbSequences++;
-    cout << "adding seq: " << seqId <<  " to signature: " << this->signatureId << endl;
-    cout << "nb of sequence in signature: " << this->signatureId << " is: " <<  this->nbSequences << endl;
+//    cout << "adding seq: " << seqId <<  " to signature: " << this->signatureId << endl;
+//    cout << "nb of sequence in signature: " << this->signatureId << " is: " <<  this->nbSequences << endl;
 }
 
 short Signature::getPositionOfSeqId(unsigned int seqId){
