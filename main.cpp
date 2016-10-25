@@ -12,7 +12,7 @@
 #include "Signature.h"
 #include "Sequence.h"
 #include "Sequences.h"
-
+#include <memory>
 
 
 using namespace std;
@@ -20,9 +20,9 @@ using namespace std;
 
 // require a: delete partitions
 // returns NULL a sequence is not fund in a signature
-unsigned int *findPartitions(const Sequences *pSequencesList, unsigned int nbSequences, unsigned short nbBands) {
+unsigned int * findPartitions(const Sequences *pSequencesList, unsigned int nbSequences, unsigned short nbBands) {
     // cout << "Working on NB_SEQS=" <<  nbSequences << "\n";
-    unsigned int *partitions = new unsigned int[nbSequences];
+ unsigned int *partitions = new unsigned int[nbSequences];
 
     queue<unsigned int> myQueue;
     set<unsigned int> neighborsSet;
@@ -131,15 +131,14 @@ unsigned int *findPartitions(const Sequences *pSequencesList, unsigned int nbSeq
             //System.out.println(" queue is: "+queue.size()+" in size");
         }
         neighborhoodCount.erase(i);
-        if (neighborhoodCount.size()> 0) {
-            cout << "neighborhoodCount of " << i << " is:" << endl;
-            for (auto item : neighborhoodCount) {
-                cout << item.first << ":" << item.second << "\t";
-            }
-            cout << endl;
-        }
+//        if (neighborhoodCount.size()> 0) {
+//            cout << "neighborhoodCount of " << i << " is:" << endl;
+//            for (auto item : neighborhoodCount) {
+//                cout << item.first << ":" << item.second << "\t";
+//            }
+//            cout << endl;
+//        }
         neighborhoodCount.clear();
-
     }
     cout << "partitions are:" << endl;
     for (int i = 0; i < nbSequences; ++i) {
@@ -152,7 +151,7 @@ unsigned int *findPartitions(const Sequences *pSequencesList, unsigned int nbSeq
 
 
 void parseInputFile (string filePath, unsigned int &NB_SEQS, unsigned short &NB_BANDS,
-                     Sequences* &pSequencesList, vector<Signature *> &pSignaturesList){
+                     Sequences* &pSequencesList){
 
     ifstream input(filePath);
 
@@ -172,13 +171,15 @@ void parseInputFile (string filePath, unsigned int &NB_SEQS, unsigned short &NB_
         boost::split(sequences, lineTokens[1], boost::is_any_of(","));
         for (vector<string>::iterator it = sequences.begin(); it != sequences.end(); ++it) {
             unsigned int seqId = boost::lexical_cast<unsigned int>(*it);
+
             unsigned short bandNumber = boost::lexical_cast<unsigned short>(lineTokens[2].substr(0, lineTokens[2].find(",")));
 
             sig->addSequence(seqId);
-            pSequencesList->items[seqId]->signatures[bandNumber] = sig;
+
+            pSequencesList->items[seqId]->addSignature(sig, bandNumber);
 
         }
-        pSignaturesList.push_back(sig);
+        //pSignaturesList.push_back(sig);
     }
 }
 
@@ -186,10 +187,10 @@ void parseInputFile (string filePath, unsigned int &NB_SEQS, unsigned short &NB_
 
 int main() {
     // NB_BANDS at most 255 (unsigned short)
-    unsigned int NB_SEQS = 6;
+    unsigned int NB_SEQS = 100000;
     // unsigned int NB_SEQS = 10000;
 
-    unsigned short NB_BANDS = 2;
+    unsigned short NB_BANDS = 128;
 
     std::cout << "Starting analysis" << std::endl;
 
@@ -197,23 +198,28 @@ int main() {
     // this is not needed. Unless we need to trverse the signatures...
     // We can just assign the signature to its first sequence
     // and copy the pointer in the other sequences
-    vector<Signature *> pSignaturesList;
+    //vector<Signature *> pSignaturesList;
 
     Sequences * pSequencesList = new Sequences(NB_SEQS, NB_BANDS);
 
     cout << "Loading signatures files " << endl;
-    parseInputFile("/tmp/testfile.txt_", NB_SEQS, NB_BANDS, pSequencesList, pSignaturesList);
+    parseInputFile("input.txt", NB_SEQS, NB_BANDS, pSequencesList);
 
 
     cout << "Finding partiotns " << endl;
     unsigned int* partitions = findPartitions(pSequencesList, NB_SEQS, NB_BANDS);
 
 
-    cout << "Cleaning data structures" << endl;
+        cout << "Cleaning data structures" << endl;
+    cout << "Cleaning sequences" << endl;
     delete pSequencesList;
-    for (int i = 0; i < pSignaturesList.size(); i++) {
-        delete pSignaturesList[i];
-    }
+    cout << "Cleaning signature" << endl;
+
+
+//    for (int i = 0; i < pSignaturesList.size(); i++) {
+//
+//        delete pSignaturesList[i];
+//    }
 
     return 0;
 

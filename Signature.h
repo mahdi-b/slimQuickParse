@@ -19,6 +19,9 @@ public:
     Signature(unsigned int signatureId, unsigned short cardinality);
     ~Signature();
 
+    Signature(const Signature &){std::cout << "COPYING"; };
+
+
     void addSequence(unsigned int seqId);
     short getPositionOfSeqId(unsigned int seqId);
 
